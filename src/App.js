@@ -107,7 +107,7 @@ class App extends React.Component {
             if(items[i][j] !== 0){
               img = TileSwitcher(items[i][j], this.refs)
               top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-              ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i))
+              ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) + 15)
             }
         }
 
@@ -355,6 +355,8 @@ class App extends React.Component {
         <img alt="" ref="riverBridge4" src={require("./images/riverBridge4.png")} className="hidden"/>
 
         <img alt="" ref="selectedGrid" src={require("./images/selectedGrid.png")} className="hidden"/>
+
+        <img alt="" ref="building" src={require("./images/building.png")} className="hidden"/>
       </div>
    )
   }

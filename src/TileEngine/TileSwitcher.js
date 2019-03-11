@@ -129,7 +129,9 @@ export const TileSwitcher = (tileId, context) => {
       case 105: return context.riverBridge4;
 
       case 106: return context.selectedGrid;
-      
+
+      case 107: return context.building;
+
       default: return context.empty;
     }
 
