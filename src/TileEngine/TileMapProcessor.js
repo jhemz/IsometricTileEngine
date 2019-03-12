@@ -196,3 +196,18 @@ const testMap4 = ProcessMap(testMap3, grassTileMap);
 const testMap5 = ProcessMap(testMap4, waterTileMap);
 //Process Beach
 export const terrain = ProcessMap(testMap5, beachTileMap);
+
+export function processTiles(terrainMap){
+  //process roads
+  const testMap1 = ProcessMap(terrainMap, roadTileMap);
+  //process banked rivers 
+  const testMap2 = ProcessMap(testMap1, bankedRiverTileMap);
+  //process rivers
+  const testMap3 = ProcessMap(testMap2, riverTileMap);
+  //process grass
+  const testMap4 = ProcessMap(testMap3, grassTileMap);
+  //Process Water
+  const testMap5 = ProcessMap(testMap4, waterTileMap);
+  //Process Beach
+  return ProcessMap(testMap5, beachTileMap);
+}

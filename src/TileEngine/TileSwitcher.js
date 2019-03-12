@@ -132,6 +132,14 @@ export const TileSwitcher = (tileId, context) => {
 
       case 107: return context.building;
 
+      case 108: return context.office;
+
+      case 109: return context.car1;
+      case 110: return context.car2;
+      case 111: return context.car3;
+      case 112: return context.car4;
+
+
       default: return context.empty;
     }
 
