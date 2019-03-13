@@ -1,5 +1,5 @@
 import { terrainMap } from "./TerrainMap";
-import { roadTileMap, bankedRiverTileMap, riverTileMap, grassTileMap, waterTileMap, beachTileMap } from "./tileMaps";
+import { roadTileMap, bankedRiverTileMap, riverTileMap, grassTileMap, waterTileMap, beachTileMap, dirtTileMap, sandTileMap } from "./tileMaps";
 
 function ProcessMap(map, tileMap){//, tileId, straightJunction_horizontal, straightJunction_vertical, bend_1, bend_2, bend_3, bend_4, tJunction_1, tJunction_2, tJunction_3, tJunction_4, cross, outJunction_bend_1, outJunction_bend_2, outJunction_bend_3, outJunction_bend_4, edge_1, edge_2, edge_3, edge_4){
     var tiles = fillArray([map.length, map[0].length], 0);
@@ -194,8 +194,13 @@ const testMap3 = ProcessMap(testMap2, riverTileMap);
 const testMap4 = ProcessMap(testMap3, grassTileMap);
 //Process Water
 const testMap5 = ProcessMap(testMap4, waterTileMap);
+//Process dirt
+const testMap6 = ProcessMap(testMap5, dirtTileMap);
+//Process sand
+const testMap7 = ProcessMap(testMap6, sandTileMap);
+
 //Process Beach
-export const terrain = ProcessMap(testMap5, beachTileMap);
+export const terrain = ProcessMap(testMap7, beachTileMap);
 
 export function processTiles(terrainMap){
   //process roads
@@ -208,6 +213,11 @@ export function processTiles(terrainMap){
   const testMap4 = ProcessMap(testMap3, grassTileMap);
   //Process Water
   const testMap5 = ProcessMap(testMap4, waterTileMap);
+  //Process dirt
+  const testMap6 = ProcessMap(testMap5, dirtTileMap);
+  //Process sand
+  const testMap7 = ProcessMap(testMap6, sandTileMap);
+
   //Process Beach
-  return ProcessMap(testMap5, beachTileMap);
+  return ProcessMap(testMap7, beachTileMap);
 }

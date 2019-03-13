@@ -237,14 +237,7 @@ class App extends React.Component {
       
 
       if(this.state.drawTile !== ""){
-        switch (this.state.drawTile){
-          case "r": terrainMap[tile.y][tile.x] = this.state.drawTile
-          case "rb": terrainMap[tile.y][tile.x] = this.state.drawTile
-          case "rv": terrainMap[tile.y][tile.x] = this.state.drawTile
-          case "b": terrainMap[tile.y][tile.x] = this.state.drawTile
-          case "w": terrainMap[tile.y][tile.x] = this.state.drawTile
-
-        }
+        terrainMap[tile.y][tile.x] = this.state.drawTile
       }
       
       if(this.state.currentTileToSet !== 0){
@@ -354,11 +347,13 @@ class App extends React.Component {
                   }
               }>Delete</Button>
 
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "r"})}} >Draw Road<img src={require("./images/roadEW.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "rb"})}} >Draw River Banked<img src={require("./images/riverBankedEW.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "rv"})}} >Draw River<img src={require("./images/riverEW.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "b"})}} >Draw Beach<img src={require("./images/beachES.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "w"})}} >Draw Water<img src={require("./images/waterNW.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "r"})}} ><img src={require("./images/roadEW.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "rb"})}} ><img src={require("./images/riverBankedEW.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "rv"})}} ><img src={require("./images/riverEW.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "b"})}} ><img src={require("./images/beachES.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "w"})}} ><img src={require("./images/waterNW.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "d"})}} ><img src={require("./images/dirtDouble.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "s"})}} ><img src={require("./images/beach.png")}/></Button>
             </ButtonGroup>
 
             <InputGroup>

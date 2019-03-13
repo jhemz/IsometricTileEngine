@@ -23,7 +23,7 @@ var LandRover = {
     path: [{x:1, y:0},{x:8, y:5}],
     repeat: false,
     shortestPath: true,
-    reverse: false
+    reverse: true
   }
   
   var LandRover2 = {
