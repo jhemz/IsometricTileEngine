@@ -6,16 +6,19 @@ import { TileSwitcher } from './TileEngine/TileSwitcher';
 import { terrainMap } from './TileEngine/TerrainMap';
 import { items } from './TileEngine/ItemsMap';
 import { MovableItems } from './TileEngine/MoveableItems';
-import { terrain, processTiles } from './TileEngine/TileMapProcessor';
+import { terrain, processTiles, ProcessPipes } from './TileEngine/TileMapProcessor';
 import { Button, ButtonGroup, DropdownButton, Dropdown,InputGroup, ButtonToolbar, FormControl } from 'react-bootstrap';
+
 
 const tileWidth = 100;
 var subterrain;
+var PipesLayer;
 var bedrock;
 var mapWidth = 0;
 var mouseCoords = {x: 0, y: 0}
-// var state.currentTileToSet = 0;
-// var currentItemTileToSet = 0;
+
+
+
 
 class App extends React.Component {
 
@@ -26,8 +29,7 @@ class App extends React.Component {
     this.getPosition = this.getPosition.bind(this);
     this.MouseMoveEvent = this.MouseMoveEvent.bind(this);
     mapWidth = terrainMap[0].length
-    // this.state.currentTileToSet = 0;
-    // this.currentItemTileToSet = 0;
+
 
     
     this.state = { currentTileToSet: 0, drawTile : "", currentItemTileToSet: 0, drawTile : "", 
@@ -43,7 +45,8 @@ class App extends React.Component {
       }
     }
 
-    subterrain = new Array(terrainMap.length)
+    subterrain = new Array(terrainMap.length);
+    PipesLayer = new Array(terrainMap.length);
 
     for (var i = 0; i < terrainMap.length; i++) {
       subterrain[i] = new Array(terrainMap[i].length)
@@ -51,6 +54,14 @@ class App extends React.Component {
         subterrain[i][j] = 77;
       }
     }
+    for (var i = 0; i < terrainMap.length; i++) {
+      PipesLayer[i] = new Array(terrainMap[i].length)
+      for (var j = 0; j < terrainMap[i].length; j++) {
+        PipesLayer[i][j] = "";
+      }
+    }
+    console.log(PipesLayer)
+    
   }
 
   loop() {
@@ -72,130 +83,145 @@ class App extends React.Component {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      //bedrock
-      for (var i = 0; i < bedrock.length; i++) {
-        for (var j = 0; j < bedrock[i].length; j++) {
-          if(bedrock[i][j] !== 0){
-            img = TileSwitcher(bedrock[i][j], this.refs)
-            var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-            ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) + 30)
-          }
+    //bedrock
+    for (var i = 0; i < bedrock.length; i++) {
+      for (var j = 0; j < bedrock[i].length; j++) {
+        if(bedrock[i][j] !== 0){
+          img = TileSwitcher(bedrock[i][j], this.refs)
+          var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
+          ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) + 30)
         }
       }
+    }
 
-      //subterrain
-      for (var i = 0; i < subterrain.length; i++) {
-        for (var j = 0; j < subterrain[i].length; j++) {
-          if(subterrain[i][j] !== 0){
-            img = TileSwitcher(subterrain[i][j], this.refs)
-            var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-            ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) + 15)
-          }
+    //subterrain
+    for (var i = 0; i < subterrain.length; i++) {
+      for (var j = 0; j < subterrain[i].length; j++) {
+        if(subterrain[i][j] !== 0){
+          img = TileSwitcher(subterrain[i][j], this.refs)
+          var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
+          ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) + 15)
         }
       }
-      //terrain
-      var terrainToDraw = processTiles(terrainMap)
-      for (i = 0; i < terrainToDraw.length; i++) {
-        for (j = 0; j < terrainToDraw[i].length; j++) {
-          if(terrainToDraw[i][j] !== 0){
-            img = TileSwitcher(terrainToDraw[i][j], this.refs)
-            top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-            ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) )
+    }
 
-            if(i === mouseCoords.y && j == mouseCoords.x){
-              img = TileSwitcher(106, this.refs)
-              ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) )
-            }
-          }
+    //Pipes
+    var pipesToDraw = ProcessPipes(PipesLayer)
+    for (var i = 0; i < pipesToDraw.length; i++) {
+      for (var j = 0; j < pipesToDraw[i].length; j++) {
+        if(pipesToDraw[i][j] !== 0){
+          img = TileSwitcher(pipesToDraw[i][j], this.refs)
+          var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
+          ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) + 15)
         }
       }
+    }
 
-      //items
-      for (i = 0; i < items.length; i++) {
-        for (j = 0; j < items[i].length; j++) {
-            if(items[i][j] !== 0){
-              img = TileSwitcher(items[i][j], this.refs)
-              top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-              ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i))
-            }
-        }
-
-      //moveable Items  
-      for (var z = 0; z < MovableItems.length; z++) {
-        var item = MovableItems[z];
-        const path = item.path
-
-        const realPath = []
-
-        if(item.shortestPath === false){
-          realPath = ProcessPath(path, mapWidth, tileWidth)
-        }
-        else{
+    //terrain
+    var terrainToDraw = processTiles(terrainMap)
+    for (i = 0; i < terrainToDraw.length; i++) {
+      for (j = 0; j < terrainToDraw[i].length; j++) {
+        if(terrainToDraw[i][j] !== 0){
+          img = TileSwitcher(terrainToDraw[i][j], this.refs)
          
+          //ctx.globalAlpha = 0.4;
           
-          realPath = FindShortestPathPath(item.path[0], item.path[1], mapWidth, tileWidth)
-          
-          if(item.position === undefined){
-            item.position = realPath[0];
-          }
+          top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
+          ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) )
 
-          if(item.stage === realPath.length - 1){
-            item.path = [item.path[1], item.path[0]];
-            realPath = FindShortestPathPath(item.path[0], item.path[1], mapWidth, tileWidth)
-            item.stage = 0;
+          if(i === mouseCoords.y && j == mouseCoords.x){
+            img = TileSwitcher(106, this.refs)
+            ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) )
           }
         }
+      }
+    }
+    ctx.globalAlpha = 1;
+    //items
+    for (i = 0; i < items.length; i++) {
+      for (j = 0; j < items[i].length; j++) {
+          if(items[i][j] !== 0){
+            img = TileSwitcher(items[i][j], this.refs)
+            top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
+            ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i))
+          }
+      }
+    }
+    //moveable Items  
+    for (var z = 0; z < MovableItems.length; z++) {
+      var item = MovableItems[z];
+      const path = item.path
 
-       
-        var goingLeft = false;
-        var tileToDraw = item.tile1;
+      const realPath = []
 
+      if(item.shortestPath === false){
+        realPath = ProcessPath(path, mapWidth, tileWidth)
+      }
+      else{
+      
+        
+        realPath = FindShortestPathPath(item.path[0], item.path[1], mapWidth, tileWidth)
+        
         if(item.position === undefined){
           item.position = realPath[0];
         }
-        if(item.stage < realPath.length - 1){
-          const NextPosition = realPath[item.stage + 1]
-          if(NextPosition.x < item.position.x ){
-            item.position.x -= item.speed;
-            goingLeft = true;
-          }
-          else{
-            item.position.x += item.speed;
-            goingLeft = false;
-          }
-          if(NextPosition.y < item.position.y ){
-            item.position.y -=item.speed/2;
-            if(goingLeft){
-              tileToDraw = item.tile2;
-            }
-           else{
-              tileToDraw = item.tile1;
-            }
-          }
-          else{
-            item.position.y +=item.speed/2;
-            if(goingLeft){
-              tileToDraw = item.tile3;
-            }
-            if(!goingLeft){
-              tileToDraw = item.tile4;
-            }
-          }
-          
-          if(NextPosition.x === Math.round(item.position.x) && NextPosition.y === Math.round(item.position.y)){
-            item.stage++;
-          }
-        }
-        else if(item.repeat === true){
+
+        if(item.stage === realPath.length - 1){
+          item.path = [item.path[1], item.path[0]];
+          realPath = FindShortestPathPath(item.path[0], item.path[1], mapWidth, tileWidth)
           item.stage = 0;
-          item.position = realPath[0];
         }
-        var itemToMove = TileSwitcher(tileToDraw, this.refs)
-        ctx.drawImage(itemToMove, item.position.x, item.position.y)
       }
 
+    
+      var goingLeft = false;
+      var tileToDraw = item.tile1;
 
+      if(item.position === undefined){
+        item.position = realPath[0];
+      }
+      if(item.stage < realPath.length - 1){
+        const NextPosition = realPath[item.stage + 1]
+        if(NextPosition.x < item.position.x ){
+          item.position.x -= item.speed;
+          goingLeft = true;
+        }
+        else{
+          item.position.x += item.speed;
+          goingLeft = false;
+        }
+        if(NextPosition.y < item.position.y ){
+          item.position.y -=item.speed/2;
+          if(goingLeft){
+            tileToDraw = item.tile2;
+          }
+        else{
+            tileToDraw = item.tile1;
+          }
+        }
+        else{
+          item.position.y +=item.speed/2;
+          if(goingLeft){
+            tileToDraw = item.tile3;
+          }
+          if(!goingLeft){
+            tileToDraw = item.tile4;
+          }
+        }
+        
+        if(NextPosition.x === Math.round(item.position.x) && NextPosition.y === Math.round(item.position.y)){
+          item.stage++;
+        }
+      }
+      else if(item.repeat === true){
+        item.stage = 0;
+        item.position = realPath[0];
+      }
+      var itemToMove = TileSwitcher(tileToDraw, this.refs)
+      ctx.drawImage(itemToMove, item.position.x, item.position.y)
     }
+
+
   }
 
 
@@ -237,9 +263,18 @@ class App extends React.Component {
       
 
       if(this.state.drawTile !== ""){
-        terrainMap[tile.y][tile.x] = this.state.drawTile
-        if(items[tile.y][tile.x] !== 0){
-          items[tile.y][tile.x] = 0
+       
+        if(this.state.drawTile !== "p"){
+          if(this.state.drawTile !== "_"){
+            terrainMap[tile.y][tile.x] = "";
+          }
+          terrainMap[tile.y][tile.x] = this.state.drawTile
+        
+          if(items[tile.y][tile.x] !== 0){
+            items[tile.y][tile.x] = 0
+          }
+        }else{
+          PipesLayer[tile.y][tile.x] = this.state.drawTile
         }
       }
       
@@ -249,7 +284,7 @@ class App extends React.Component {
 
       if(this.state.currentItemTileToSet !== 0){
         items[tile.y][tile.x] = this.state.currentItemTileToSet
-        if(terrainMap[tile.y][tile.x] = "r"){
+        if(terrainMap[tile.y][tile.x] === "r"){
           terrainMap[tile.y][tile.x] = "d"
         }
       }
@@ -324,7 +359,9 @@ class App extends React.Component {
 
         <ButtonGroup vertical className="float-left">
               <Button  onClick={()=>{this.state.currentItemTileToSet = 113;}}><img src={require("./images/bulldozer.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "_"})}}><img src={require("./images/spade.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "r"})}} ><img src={require("./images/roadEW.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "gr"})}} ><img src={require("./images/grass.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "rb"})}} ><img src={require("./images/riverBankedEW.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "rv"})}} ><img src={require("./images/riverEW.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "b"})}} ><img src={require("./images/beachES.png")}/></Button>
@@ -335,6 +372,10 @@ class App extends React.Component {
         <ButtonGroup vertical className="float-left">
              
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 107, drawTile : ""})}} ><img src={require("./images/building.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 114, drawTile : ""})}} ><img src={require("./images/boreHole.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 115, drawTile : ""})}} ><img src={require("./images/waterTower.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 116, drawTile : ""})}} ><img src={require("./images/building2.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 117, drawTile : ""})}} ><img src={require("./images/treatmentPond.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 108, drawTile : ""})}} ><img src={require("./images/office.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 91, drawTile : ""})}} ><img src={require("./images/coniferAltShort.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 92, drawTile : ""})}} ><img src={require("./images/coniferAltTall.png")}/></Button>
@@ -345,6 +386,8 @@ class App extends React.Component {
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 97, drawTile : ""})}} ><img src={require("./images/treeShort.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 98, drawTile : ""})}} ><img src={require("./images/treeTall.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 99, drawTile : ""})}} ><img src={require("./images/tank.png")}/></Button>
+
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "p"})}} ><img src={require("./images/pipe1.png")}/></Button>
         </ButtonGroup>
 
 
@@ -549,6 +592,23 @@ class App extends React.Component {
             <img className={this.state.currentItemTileToSet === 111? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 111, currentTileToSet: 0, drawTile : ""})}} alt="" ref="car3" src={require("./images/car3.png")}  />
             <img className={this.state.currentItemTileToSet === 112? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 112, currentTileToSet: 0, drawTile : ""})}} alt="" ref="car4" src={require("./images/car4.png")}  />
             <img className={this.state.currentItemTileToSet === 113? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 113, currentTileToSet: 0, drawTile : ""})}} alt="" ref="emptyItem" src={require("./images/empty.png")}  />
+
+            <img className={this.state.currentItemTileToSet === 114? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 114, currentTileToSet: 0, drawTile : ""})}} alt="" ref="boreHole" src={require("./images/boreHole.png")}  />
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 115, currentTileToSet: 0, drawTile : ""})}} alt="" ref="waterTower" src={require("./images/waterTower.png")}  />
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 116, currentTileToSet: 0, drawTile : ""})}} alt="" ref="building2" src={require("./images/building2.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 117, currentTileToSet: 0, drawTile : ""})}} alt="" ref="treatmentPond" src={require("./images/treatmentPond.png")}/>
+        
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe1" src={require("./images/pipe1.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe2" src={require("./images/pipe2.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe3" src={require("./images/pipe3.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe4" src={require("./images/pipe4.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe5" src={require("./images/pipe5.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe6" src={require("./images/pipe6.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe7" src={require("./images/pipe7.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe8" src={require("./images/pipe8.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe9" src={require("./images/pipe9.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe10" src={require("./images/pipe10.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe11" src={require("./images/pipe11.png")}/>
         </div>
       </div>
    )

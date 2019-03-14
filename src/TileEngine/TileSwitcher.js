@@ -139,7 +139,22 @@ export const TileSwitcher = (tileId, context) => {
       case 111: return context.car3;
       case 112: return context.car4;
       case 113: return context.emptyItem;
+      case 114: return context.boreHole;
+      case 115: return context.waterTower;
+      case 116: return context.building2;
+      case 117: return context.treatmentPond;
 
+      case 118: return context.pipe1;
+      case 119: return context.pipe2;
+      case 120: return context.pipe3;
+      case 121: return context.pipe4;
+      case 122: return context.pipe5;
+      case 123: return context.pipe6;
+      case 124: return context.pipe7;
+      case 125: return context.pipe8;
+      case 126: return context.pipe9;
+      case 127: return context.pipe10;
+      case 128: return context.pipe11;
 
       default: return context.empty;
     }

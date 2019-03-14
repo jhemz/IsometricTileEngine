@@ -22,6 +22,11 @@ code {
   visibility: visible;
 }
 
+.transparent{
+  opacity:0.4;
+    filter:alpha(opacity=40); /* For IE8 and earlier */
+}
+
 .unselected{
   border: 1px solid lightgray;
 }

@@ -1,5 +1,5 @@
 import { terrainMap } from "./TerrainMap";
-import { roadTileMap, bankedRiverTileMap, riverTileMap, grassTileMap, waterTileMap, beachTileMap, dirtTileMap, sandTileMap } from "./tileMaps";
+import { roadTileMap, bankedRiverTileMap, riverTileMap, grassTileMap, waterTileMap, beachTileMap, dirtTileMap, sandTileMap, pipesTileMap } from "./tileMaps";
 
 function ProcessMap(map, tileMap){//, tileId, straightJunction_horizontal, straightJunction_vertical, bend_1, bend_2, bend_3, bend_4, tJunction_1, tJunction_2, tJunction_3, tJunction_4, cross, outJunction_bend_1, outJunction_bend_2, outJunction_bend_3, outJunction_bend_4, edge_1, edge_2, edge_3, edge_4){
     var tiles = fillArray([map.length, map[0].length], 0);
@@ -165,6 +165,9 @@ function ProcessMap(map, tileMap){//, tileId, straightJunction_horizontal, strai
             tiles[i][j] = tileMap.outJunction_bend_4;
           }
   
+
+        
+
           break;
   
           default: 
@@ -220,4 +223,8 @@ export function processTiles(terrainMap){
 
   //Process Beach
   return ProcessMap(testMap7, beachTileMap);
+}
+
+export function ProcessPipes(pipesMap){
+  return ProcessMap(pipesMap, pipesTileMap);
 }
