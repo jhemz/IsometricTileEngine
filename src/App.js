@@ -19,8 +19,8 @@ var mapWidth = 0;
 var mouseCoords = {x: 0, y: 0}
 var xAdjuster= 0;
 var yAdjuster= 0;
-
-
+var labelAnimationHeight = 0;
+var reverse = false;
 
 class App extends React.Component {
 
@@ -136,12 +136,6 @@ class App extends React.Component {
           if(i === mouseCoords.y && j == mouseCoords.x){
             img = TileSwitcher(106, this.refs)
             ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i), yAdjuster + (25 * j)+ (25 * i) )
-            
-            if(items[i][j] !== 0){
-              ctx.font = "30px Arial";
-              ctx.fillText(TileIdToDescription(items[i][j]), xAdjuster+ (50 * j) - (50 * i), yAdjuster + (25 * j)+ (25 * i) );    
-    
-            }
          }
         }
       }
@@ -240,9 +234,67 @@ class App extends React.Component {
       }
     }
 
+    //Labels
+    for (i = 0; i < items.length; i++) {
+      for (j = 0; j < items[i].length; j++) {
+          if(items[i][j] !== 0 && items[i][j] !== 113){
+            img = TileSwitcher(items[i][j], this.refs)
+
+              if(i === mouseCoords.y && j == mouseCoords.x){
+                if(items[i][j] !== 0){
+
+                  const x = j
+                  const y = i
+
+                  
+                  if(labelAnimationHeight === 50){
+                    reverse = true;
+                  }
+                  if(labelAnimationHeight === 0){
+                    reverse = false;
+                  }
+                 
+
+                  labelAnimationHeight = reverse? labelAnimationHeight - 0.05: labelAnimationHeight + 0.05;
+
+                  var adjuster = Math.sin(labelAnimationHeight)
+
+                  var realCoord = {x:(xAdjuster + (50 * x) - (50 * y)), y:(yAdjuster + (25 * x)+ (25 * y) + adjuster * 15)}
+
+
+
+                  var circleWidth = 100;
+
+
+                  ctx.fillStyle = 'white';
+                  ctx.beginPath();
+                  ctx.arc(realCoord.x + circleWidth/2,realCoord.y - circleWidth* 1.5, circleWidth , 0, 2 * Math.PI);
+                  ctx.stroke();
+                  ctx.fill();
+
+                  ctx.fillStyle = '#005EB8';
+                  ctx.beginPath();
+                  ctx.arc(realCoord.x + circleWidth/2,realCoord.y - circleWidth* 1.5, circleWidth - 5, 0, 2 * Math.PI);
+                  ctx.stroke();
+                  ctx.fill();
+
+                  img = this.refs.ashlogo
+                  ctx.drawImage(img, realCoord.x + 8, realCoord.y - circleWidth* 2.3)
+
+                  ctx.fillStyle = 'white';
+                  ctx.font = "30px Arial";
+                  ctx.textAlign = "center"; 
+                  ctx.fillText(TileIdToDescription(items[i][j]), realCoord.x + circleWidth/2,realCoord.y - circleWidth* 1.4);  
+                }
+              }
+          }
+      }
+    }
+
 
   }
 
+  
 
   //Get Mouse Position
   getMousePos(canvas, evt) {
@@ -642,6 +694,7 @@ class App extends React.Component {
 
             <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 131, currentTileToSet: 0, drawTile : ""})}} alt="" ref="dam" src={require("./images/dam.png")}/>
             <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 132, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pineForest" src={require("./images/pineForest.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 133, currentTileToSet: 0, drawTile : ""})}} alt="" ref="ashlogo" src={require("./images/ashlogo.png")}/>
         </div>
       </div>
    )
