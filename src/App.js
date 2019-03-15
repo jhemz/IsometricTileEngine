@@ -31,8 +31,8 @@ class App extends React.Component {
     this.getPosition = this.getPosition.bind(this);
     this.MouseMoveEvent = this.MouseMoveEvent.bind(this);
     mapWidth = terrainMap[0].length
-    xAdjuster=  Math.ceil(((mapWidth*tileWidth)/2)/100)*50;
-    yAdjuster = -250;
+    xAdjuster=  Math.ceil(((mapWidth*tileWidth)/2)/100)*100;
+    yAdjuster = 0;
     
     this.state = { currentTileToSet: 0, drawTile : "", currentItemTileToSet: 0, drawTile : "", 
       drawTile: "",
