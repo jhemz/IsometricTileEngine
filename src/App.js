@@ -128,7 +128,6 @@ class App extends React.Component {
       for (j = 0; j < terrainToDraw[i].length; j++) {
         if(terrainToDraw[i][j] !== 0){
           img = TileSwitcher(terrainToDraw[i][j], this.refs)
-         
           //ctx.globalAlpha = 0.4;
           ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i),  yAdjuster +(25 * j)+ (25 * i) )
 
@@ -147,16 +146,7 @@ class App extends React.Component {
         }
       }
     }
-    ctx.globalAlpha = 1;
-    //items
-    for (i = 0; i < items.length; i++) {
-      for (j = 0; j < items[i].length; j++) {
-          if(items[i][j] !== 0){
-            img = TileSwitcher(items[i][j], this.refs)
-            ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i),  yAdjuster +(25 * j)+ (25 * i))
-          }
-      }
-    }
+  
     //moveable Items  
     for (var z = 0; z < MovableItems.length; z++) {
       var item = MovableItems[z];
@@ -230,6 +220,26 @@ class App extends React.Component {
       ctx.drawImage(itemToMove, item.position.x, item.position.y)
     }
 
+    ctx.globalAlpha = 1;
+    //items
+    for (i = 0; i < items.length; i++) {
+      for (j = 0; j < items[i].length; j++) {
+          if(items[i][j] !== 0){
+            img = TileSwitcher(items[i][j], this.refs)
+
+            if(img.height > 65){
+              const extraHeight = img.height - 65
+              ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i),  yAdjuster +(25 * j)+ (25 * i) - extraHeight)
+            }
+            else{
+              ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i),  yAdjuster +(25 * j)+ (25 * i))
+            }
+
+           
+          }
+      }
+    }
+
 
   }
 
@@ -291,12 +301,12 @@ class App extends React.Component {
       }
 
       if(this.state.currentItemTileToSet !== 0){
-        console.log(PipesLayer[tile.y][tile.x])
+        console.log(terrainMap[tile.y][tile.x])
         items[tile.y][tile.x] = this.state.currentItemTileToSet
         if(terrainMap[tile.y][tile.x] === "r"){
           terrainMap[tile.y][tile.x] = "d"
         }
-        if(terrainMap[tile.y][tile.x] === ""){
+        if(terrainMap[tile.y][tile.x] === "_"){
           console.log(PipesLayer[tile.y][tile.x])
           PipesLayer[tile.y][tile.x] = 113
         }
@@ -370,7 +380,7 @@ class App extends React.Component {
         </div>
 
         <ButtonGroup vertical className="float-left">
-              <Button  onClick={()=>{this.state.currentItemTileToSet = 113;}}><img src={require("./images/bulldozer.png")}/></Button>
+              <Button   onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 113, drawTile : ""})}}><img src={require("./images/bulldozer.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "_"})}}><img src={require("./images/spade.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "r"})}} ><img src={require("./images/roadEW.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "gr"})}} ><img src={require("./images/grass.png")}/></Button>
@@ -384,6 +394,8 @@ class App extends React.Component {
         <ButtonGroup vertical className="float-left">
              
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 107, drawTile : ""})}} ><img src={require("./images/building.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 129, drawTile : ""})}} ><img src={require("./images/building3.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 130, drawTile : ""})}} ><img src={require("./images/building4.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 114, drawTile : ""})}} ><img src={require("./images/boreHole.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 115, drawTile : ""})}} ><img src={require("./images/waterTower.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 116, drawTile : ""})}} ><img src={require("./images/building2.png")}/></Button>
@@ -395,9 +407,12 @@ class App extends React.Component {
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 94, drawTile : ""})}} ><img src={require("./images/coniferTall.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 95, drawTile : ""})}} ><img src={require("./images/treeAltShort.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 96, drawTile : ""})}} ><img src={require("./images/treeAltTall.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 132, drawTile : ""})}} ><img src={require("./images/pineForest.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 97, drawTile : ""})}} ><img src={require("./images/treeShort.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 98, drawTile : ""})}} ><img src={require("./images/treeTall.png")}/></Button>
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 99, drawTile : ""})}} ><img src={require("./images/tank.png")}/></Button>
+
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 131, drawTile : ""})}} ><img src={require("./images/dam.png")}/></Button>
 
               <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "p"})}} ><img src={require("./images/pipe1.png")}/></Button>
         </ButtonGroup>
@@ -611,16 +626,22 @@ class App extends React.Component {
             <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 117, currentTileToSet: 0, drawTile : ""})}} alt="" ref="treatmentPond" src={require("./images/treatmentPond.png")}/>
         
             <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe1" src={require("./images/pipe1.png")}/>
-            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe2" src={require("./images/pipe2.png")}/>
-            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe3" src={require("./images/pipe3.png")}/>
-            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe4" src={require("./images/pipe4.png")}/>
-            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe5" src={require("./images/pipe5.png")}/>
-            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe6" src={require("./images/pipe6.png")}/>
-            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe7" src={require("./images/pipe7.png")}/>
-            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe8" src={require("./images/pipe8.png")}/>
-            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe9" src={require("./images/pipe9.png")}/>
-            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe10" src={require("./images/pipe10.png")}/>
-            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 118, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe11" src={require("./images/pipe11.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 119, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe2" src={require("./images/pipe2.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 120, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe3" src={require("./images/pipe3.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 121, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe4" src={require("./images/pipe4.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 122, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe5" src={require("./images/pipe5.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 123, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe6" src={require("./images/pipe6.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 124, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe7" src={require("./images/pipe7.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 124, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe8" src={require("./images/pipe8.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 126, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe9" src={require("./images/pipe9.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 127, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe10" src={require("./images/pipe10.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 128, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pipe11" src={require("./images/pipe11.png")}/>
+
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 129, currentTileToSet: 0, drawTile : ""})}} alt="" ref="building3" src={require("./images/building3.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 130, currentTileToSet: 0, drawTile : ""})}} alt="" ref="building4" src={require("./images/building4.png")}/>
+
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 131, currentTileToSet: 0, drawTile : ""})}} alt="" ref="dam" src={require("./images/dam.png")}/>
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 132, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pineForest" src={require("./images/pineForest.png")}/>
         </div>
       </div>
    )

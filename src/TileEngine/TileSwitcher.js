@@ -153,6 +153,13 @@ export const TileIdToDescription = (tileId) => {
       case 127: return "Pipe"
       case 128: return "Pipe"
 
+      case 129: return "Building"
+      case 130: return "Building"
+
+      case 131: return "dam"
+
+      case 132: return "Forest"
+
       default: return "Empty"
   }
 }
@@ -314,6 +321,13 @@ export const TileSwitcher = (tileId, context) => {
       case 126: return context.pipe9;
       case 127: return context.pipe10;
       case 128: return context.pipe11;
+
+      case 129: return context.building3;
+      case 130: return context.building4;
+
+      case 131: return context.dam;
+
+      case 132: return context.pineForest;
 
       default: return context.empty;
     }
