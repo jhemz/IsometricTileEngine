@@ -269,7 +269,7 @@ class App extends React.Component {
       const minD = Math.min.apply( Math, tiles.map(d => d.d) );
       var tile = tiles.find(x => x.d === minD);
       
-
+      //if drawing tile is set
       if(this.state.drawTile !== ""){
        
         if(this.state.drawTile !== "p"){
@@ -291,9 +291,14 @@ class App extends React.Component {
       }
 
       if(this.state.currentItemTileToSet !== 0){
+        console.log(PipesLayer[tile.y][tile.x])
         items[tile.y][tile.x] = this.state.currentItemTileToSet
         if(terrainMap[tile.y][tile.x] === "r"){
           terrainMap[tile.y][tile.x] = "d"
+        }
+        if(terrainMap[tile.y][tile.x] === ""){
+          console.log(PipesLayer[tile.y][tile.x])
+          PipesLayer[tile.y][tile.x] = 113
         }
       }
      
