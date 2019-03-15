@@ -2,7 +2,7 @@ import { terrainMap } from './TerrainMap';
 
 var PF = require('pathfinding');
 
-export function ProcessPath(coordinates, mapWidth, tileWidth){
+export function ProcessPath(coordinates, xAdjuster, yAdjuster){
     //i = 0 is starting point
  
     var realCoordinates = []
@@ -11,15 +11,14 @@ export function ProcessPath(coordinates, mapWidth, tileWidth){
      
       const x = coordinates[i].x
       const y = coordinates[i].y
-      var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-      var realCoord = {x:(top + (50 * x) - (50 * y)), y:((25 * x)+ (25 * y))}
+      var realCoord = {x:(xAdjuster + (50 * x) - (50 * y)), y:(yAdjuster + (25 * x)+ (25 * y))}
       realCoordinates.push(realCoord)
       
     }
     return realCoordinates
   }
 
-  export function ProcessShortestPath(coordinates, mapWidth, tileWidth){
+  export function ProcessShortestPath(coordinates, xAdjuster, yAdjuster){
     //i = 0 is starting point
  
     var realCoordinates = []
@@ -28,16 +27,14 @@ export function ProcessPath(coordinates, mapWidth, tileWidth){
      
       const x = coordinates[i][0]
       const y = coordinates[i][1]
-      var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-      var realCoord = {x:(top + (50 * x) - (50 * y)), y:((25 * x)+ (25 * y))}
+      var realCoord = {x:(xAdjuster + (50 * x) - (50 * y)), y:(yAdjuster + (25 * x)+ (25 * y))}
       realCoordinates.push(realCoord)
       
     }
     return realCoordinates
   }
 
-  export function FindShortestPathPath(start, end, grid, mapWidth, tileWidth){
-    
+  export function FindShortestPathPath(start, end, xAdjuster, yAdjuster){
     
 
     var grid = new PF.Grid(terrainMap[0].length, terrainMap.length); 
@@ -59,7 +56,7 @@ export function ProcessPath(coordinates, mapWidth, tileWidth){
     var path = finder.findPath(start.x, start.y, end.x, end.y, grid); 
    
 
-    var realCoordinates =  ProcessShortestPath(path, terrainMap[0].length, 100);
+    var realCoordinates =  ProcessShortestPath(path, xAdjuster, yAdjuster);
     // console.log("logging shortestPath")
       
    

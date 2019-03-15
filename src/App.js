@@ -2,9 +2,9 @@ import React from 'react';
 import "./Tiles.scss";
 import "react-isometric-tilemap/build/css/index.css";
 import { ProcessPath, FindShortestPathPath } from './TileEngine/PathProcessor';
-import { TileSwitcher } from './TileEngine/TileSwitcher';
+import { TileSwitcher, TileIdToDescription } from './TileEngine/TileSwitcher';
 import { terrainMap } from './TileEngine/TerrainMap';
-import { items } from './TileEngine/ItemsMap';
+//import { items } from './TileEngine/ItemsMap';
 import { MovableItems } from './TileEngine/MoveableItems';
 import { terrain, processTiles, ProcessPipes } from './TileEngine/TileMapProcessor';
 import { Button, ButtonGroup, DropdownButton, Dropdown,InputGroup, ButtonToolbar, FormControl } from 'react-bootstrap';
@@ -13,10 +13,12 @@ import { Button, ButtonGroup, DropdownButton, Dropdown,InputGroup, ButtonToolbar
 const tileWidth = 100;
 var subterrain;
 var PipesLayer;
+var items;
 var bedrock;
 var mapWidth = 0;
 var mouseCoords = {x: 0, y: 0}
-
+var xAdjuster= 0;
+var yAdjuster= 0;
 
 
 
@@ -29,8 +31,8 @@ class App extends React.Component {
     this.getPosition = this.getPosition.bind(this);
     this.MouseMoveEvent = this.MouseMoveEvent.bind(this);
     mapWidth = terrainMap[0].length
-
-
+    xAdjuster=  Math.ceil(((mapWidth*tileWidth)/2)/100)*50;
+    yAdjuster = -250;
     
     this.state = { currentTileToSet: 0, drawTile : "", currentItemTileToSet: 0, drawTile : "", 
       drawTile: "",
@@ -47,7 +49,8 @@ class App extends React.Component {
 
     subterrain = new Array(terrainMap.length);
     PipesLayer = new Array(terrainMap.length);
-
+    items = new Array(terrainMap.length);
+    console.log(items)
     for (var i = 0; i < terrainMap.length; i++) {
       subterrain[i] = new Array(terrainMap[i].length)
       for (var j = 0; j < terrainMap[i].length; j++) {
@@ -60,7 +63,12 @@ class App extends React.Component {
         PipesLayer[i][j] = "";
       }
     }
-    console.log(PipesLayer)
+    for (var i = 0; i < terrainMap.length; i++) {
+      items[i] = new Array(terrainMap[i].length)
+      for (var j = 0; j < terrainMap[i].length; j++) {
+        items[i][j] = 0;
+      }
+    }
     
   }
 
@@ -88,8 +96,7 @@ class App extends React.Component {
       for (var j = 0; j < bedrock[i].length; j++) {
         if(bedrock[i][j] !== 0){
           img = TileSwitcher(bedrock[i][j], this.refs)
-          var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-          ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) + 30)
+          ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i), yAdjuster + (25 * j)+ (25 * i) + 30)
         }
       }
     }
@@ -99,8 +106,7 @@ class App extends React.Component {
       for (var j = 0; j < subterrain[i].length; j++) {
         if(subterrain[i][j] !== 0){
           img = TileSwitcher(subterrain[i][j], this.refs)
-          var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-          ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) + 15)
+          ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i),  yAdjuster +(25 * j)+ (25 * i) + 15)
         }
       }
     }
@@ -111,8 +117,7 @@ class App extends React.Component {
       for (var j = 0; j < pipesToDraw[i].length; j++) {
         if(pipesToDraw[i][j] !== 0){
           img = TileSwitcher(pipesToDraw[i][j], this.refs)
-          var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-          ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) + 15)
+          ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i), yAdjuster + (25 * j)+ (25 * i) + 15)
         }
       }
     }
@@ -125,14 +130,20 @@ class App extends React.Component {
           img = TileSwitcher(terrainToDraw[i][j], this.refs)
          
           //ctx.globalAlpha = 0.4;
+          ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i),  yAdjuster +(25 * j)+ (25 * i) )
+
           
-          top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-          ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) )
 
           if(i === mouseCoords.y && j == mouseCoords.x){
             img = TileSwitcher(106, this.refs)
-            ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i) )
-          }
+            ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i), yAdjuster + (25 * j)+ (25 * i) )
+            
+            if(items[i][j] !== 0){
+              ctx.font = "30px Arial";
+              ctx.fillText(TileIdToDescription(items[i][j]), xAdjuster+ (50 * j) - (50 * i), yAdjuster + (25 * j)+ (25 * i) );    
+    
+            }
+         }
         }
       }
     }
@@ -142,8 +153,7 @@ class App extends React.Component {
       for (j = 0; j < items[i].length; j++) {
           if(items[i][j] !== 0){
             img = TileSwitcher(items[i][j], this.refs)
-            top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-            ctx.drawImage(img, top + (50 * j) - (50 * i), (25 * j)+ (25 * i))
+            ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i),  yAdjuster +(25 * j)+ (25 * i))
           }
       }
     }
@@ -155,12 +165,11 @@ class App extends React.Component {
       const realPath = []
 
       if(item.shortestPath === false){
-        realPath = ProcessPath(path, mapWidth, tileWidth)
+        realPath = ProcessPath(path, xAdjuster,  yAdjuster)
       }
       else{
-      
         
-        realPath = FindShortestPathPath(item.path[0], item.path[1], mapWidth, tileWidth)
+        realPath = FindShortestPathPath(item.path[0], item.path[1], xAdjuster, yAdjuster)
         
         if(item.position === undefined){
           item.position = realPath[0];
@@ -168,7 +177,7 @@ class App extends React.Component {
 
         if(item.stage === realPath.length - 1){
           item.path = [item.path[1], item.path[0]];
-          realPath = FindShortestPathPath(item.path[0], item.path[1], mapWidth, tileWidth)
+          realPath = FindShortestPathPath(item.path[0], item.path[1], xAdjuster, yAdjuster)
           item.stage = 0;
         }
       }
@@ -248,9 +257,8 @@ class App extends React.Component {
 
       for (var i = 0; i < terrainMap.length; i++) {
         for (var j = 0; j < terrainMap[i].length; j++) {
-          var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-          const tileX = top + (50 * j) - (50 * i);
-          const tileY = (25 * j)+ (25 * i);
+          const tileX = xAdjuster+ (50 * j) - (50 * i);
+          const tileY = yAdjuster + (25 * j)+ (25 * i);
           const centreX = tileX + 50;
           const centreY = tileY + 25;
           const distanceToCentre = Math.pow((Math.pow((x - centreX), 2) + Math.pow((y - centreY), 2)), 0.5)
@@ -313,9 +321,8 @@ class App extends React.Component {
   
       for (var i = 0; i < terrainMap.length; i++) {
         for (var j = 0; j < terrainMap[i].length; j++) {
-          var top = Math.ceil(((mapWidth*tileWidth)/2)/100)*100
-          const tileX = top + (50 * j) - (50 * i);
-          const tileY = (25 * j)+ (25 * i);
+          const tileX = xAdjuster+ (50 * j) - (50 * i);
+          const tileY = yAdjuster + (25 * j)+ (25 * i);
           const centreX = tileX + 50;
           const centreY = tileY + 25;
           const distanceToCentre = Math.pow((Math.pow((x - centreX), 2) + Math.pow((y - centreY), 2)), 0.5)

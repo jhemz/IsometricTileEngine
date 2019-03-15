@@ -1,3 +1,162 @@
+export const TileIdToDescription = (tileId) => {
+  switch (tileId) {
+      //water
+      case 3: return "Water"
+      case 4: return "Water"
+      case 5: return "Water"
+      case 6: return "Water"
+      case 7: return "Water"
+      case 8: return "Water"
+      case 9: return "Water"
+      case 10: return"Water"
+      case 11: return "Water"
+      case 12: return "Water"
+      case 13: return "Water"
+      case 14: return "Water"
+      case 15: return "Water"
+
+      //road
+      case 16: return "Road"
+      case 17: return "Road"
+      case 18: return "Road"
+      case 19: return "Road"
+      case 20: return "Road"
+      case 21: return "Road"
+      case 22: return "Road"
+      case 23: return "Road"
+      case 24: return "Road"
+      case 25: return "Road"
+      case 26: return "Road"
+      case 27: return "Road"
+      case 28: return "Road"
+      case 29: return "Road"
+      case 30: return "Road"
+      case 31: return "Road"
+      case 32: return "Road"
+      case 33: return "Road"
+      case 34: return "Road"
+      case 35: return "Road"
+      case 36: return "Road"
+      case 37: return "Road"
+      case 38: return "Road"
+      case 39: return "Road"
+      case 40: return "Road"
+      case 41: return "Road"
+      case 42:  return "Road"
+      case 43: return "Road"
+      case 44: return "Road";
+      case 45: return "Road"
+      case 46: return "Road"
+      case 47: return "Road"
+      case 48:  return "Road"
+      case 49: return "Road"
+      case 50:  return "Road"
+      case 51: return "Road"
+      case 52: return "Road"
+      case 53: return "Road"
+
+    
+
+
+      //river
+      case 54: return "River"
+      case 55: return "River"
+      case 56: return "River"
+      case 57: return "River"
+      case 58: return "River"
+      case 59: return "River"
+      case 60: return "River"
+      case 61: return "River"
+      case 62: return "River"
+      case 63: return "River"
+      case 64:  return "River"
+      case 65:  return "River"
+
+      //grass
+      case 66: return "Grass"
+      case 67: return "Grass"
+      case 68: return "Grass"
+      case 69: return "Grass"
+      case 70: return "Grass"
+      case 71: return "Grass"
+      case 72:  return "Grass"
+      case 73: return "Grass"
+      case 74: return "Grass"
+      case 75: return "Grass"
+      //dirt
+      case 76: return "Dirt"
+      case 77: return "Dirt"
+
+      //beach
+      case 78: return "Beach"
+      case 79:  return "Beach"
+      case 80:  return "Beach"
+      case 81:  return "Beach"
+      case 82: return "Beach"
+      case 83: return "Beach"
+      case 84: return "Beach"
+      case 85: return "Beach"
+      case 86: return "Beach"
+      case 87: return "Beach"
+      case 88:  return "Beach"
+      case 89:  return "Beach"
+      case 90: return "Beach"
+
+      // conifer trees
+      case 91: return "Fir tree"
+      case 92: return "Fir tree"
+      case 93: return "Fir tree"
+      case 94: return "Fir tree"
+
+      // non conifer trees
+      case 95: return "Tree"
+      case 96: return "Tree"
+      case 97: return "Tree"
+      case 98: return "Tree"
+
+      case 99: return "Tank"
+
+      case 100: return "Empty"
+
+      case 101: return "Rock"
+
+      case 102: return "Bridge"
+      case 103: return "Bridge"
+      case 104: return "Bridge"
+      case 105: return "Bridge"
+
+      case 106: return "Grid"
+
+      case 107: return "Building"
+
+      case 108: return "Office"
+
+      case 109: return "Car"
+      case 110: return "Car"
+      case 111: return "Car"
+      case 112: return "Car"
+      case 113: return "Empty"
+      case 114: return "Bore Hole"
+      case 115: return "Water Tower"
+      case 116: return "Building 2"
+      case 117: return "Treatment Pond"
+
+      case 118: return "Pipe"
+      case 119: return "Pipe"
+      case 120: return "Pipe"
+      case 121: return "Pipe"
+      case 122: return "Pipe"
+      case 123: return "Pipe"
+      case 124: return "Pipe"
+      case 125: return "Pipe"
+      case 126: return "Pipe"
+      case 127: return "Pipe"
+      case 128: return "Pipe"
+
+      default: return "Empty"
+  }
+}
+
 export const TileSwitcher = (tileId, context) => {
       
     switch (tileId) {
