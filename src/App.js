@@ -22,6 +22,8 @@ var yAdjuster= 0;
 var labelAnimationHeight = 0;
 var reverse = false;
 
+
+
 class App extends React.Component {
 
   constructor( props ){
@@ -32,10 +34,10 @@ class App extends React.Component {
     this.MouseMoveEvent = this.MouseMoveEvent.bind(this);
     mapWidth = terrainMap[0].length
     xAdjuster=  Math.ceil(((mapWidth*tileWidth)/2)/100)*100;
-    yAdjuster = 0;
+    yAdjuster = 200;
     
     this.state = { currentTileToSet: 0, drawTile : "", currentItemTileToSet: 0, drawTile : "", 
-      drawTile: "",
+      drawTile: "", selectMode : true
     };
 
     bedrock = new Array(terrainMap.length)
@@ -134,9 +136,24 @@ class App extends React.Component {
           
 
           if(i === mouseCoords.y && j == mouseCoords.x){
-            img = TileSwitcher(106, this.refs)
-            ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i), yAdjuster + (25 * j)+ (25 * i) )
+            ctx.globalAlpha = 0.5;
+            if(this.state.selectMode){
+              img = TileSwitcher(106, this.refs)
+            }
+            else{
+              img = TileSwitcher( this.state.currentItemTileToSet, this.refs)
+            }
+
+            if(img.height > 65){
+              const extraHeight = img.height - 65
+              ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i),  yAdjuster +(25 * j)+ (25 * i) - extraHeight)
+            }
+            else{
+              ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i),  yAdjuster +(25 * j)+ (25 * i))
+            }
+            ctx.globalAlpha = 1;
          }
+      
         }
       }
     }
@@ -229,7 +246,68 @@ class App extends React.Component {
               ctx.drawImage(img, xAdjuster+ (50 * j) - (50 * i),  yAdjuster +(25 * j)+ (25 * i))
             }
 
-           
+            //if the item is a text logger, draw the electromagnetic waves
+            if(items[i][j] === 134 || items[i][j] === 135){
+              var dataLogger = dataLoggers.find(function(element) {
+                return element.x === j && element.y === i;
+              });
+              if(dataLogger === undefined){
+                dataLogger = {x: j, y : i, r1 : 0, r2 : 16, r3 : 32};
+                dataLoggers.push(dataLogger)
+              }
+
+             var startAngle = Math.PI * 1.25;
+             var endAngle = 1.75 * Math.PI
+             var xMod = 50;
+             var yMod = 0;
+              if(Math.round(dataLogger.r1) === 44){
+                dataLogger.r1 = 0;
+              }
+              if(Math.round(dataLogger.r2) === 44){
+                dataLogger.r2 = 0;
+              }
+              if(Math.round(dataLogger.r3) === 44){
+                dataLogger.r3 = 0;
+              }
+
+              dataLogger.r1 += 0.4;
+              dataLogger.r2 += 0.4;
+              dataLogger.r3 += 0.4;
+
+              if(items[i][j] === 134){
+              
+              }
+              if(items[i][j] === 135){
+               
+
+                startAngle = Math.PI * 0.5;
+                endAngle = 1 * Math.PI;
+
+                xMod = 125;
+                yMod = -85
+
+               
+              }
+            
+              ctx.lineWidth = 5;
+              ctx.strokeStyle = "#4286f4";
+  
+              ctx.beginPath();
+              ctx.arc(xAdjuster+ (50 * j) - (50 * i) + xMod,  yAdjuster +(25 * j)+ (25 * i) + yMod, dataLogger.r1, startAngle, endAngle);
+              ctx.stroke();
+  
+              ctx.beginPath();
+              ctx.arc(xAdjuster+ (50 * j) - (50 * i) + xMod,  yAdjuster +(25 * j)+ (25 * i) + yMod, dataLogger.r2, startAngle, endAngle);
+              ctx.stroke();
+  
+              ctx.beginPath();
+              ctx.arc(xAdjuster+ (50 * j) - (50 * i) + xMod,  yAdjuster +(25 * j)+ (25 * i) + yMod, dataLogger.r3, startAngle, endAngle);
+              ctx.stroke();
+            }
+
+
+        
+
           }
       }
     }
@@ -293,8 +371,6 @@ class App extends React.Component {
 
 
   }
-
-  
 
   //Get Mouse Position
   getMousePos(canvas, evt) {
@@ -367,7 +443,7 @@ class App extends React.Component {
     
       const tileId = terrain[tile.y][tile.x]
       
-      if(this.state.currentTileToSet === 0 && this.state.currentItemTileToSet === 0 && this.state.currentItemTileToSet === ""){
+      if(this.state.selectMode === true){
         const modal = this.refs.myModal
         modal.style.display = "block";
         this.refs.modalImage.src =  TileSwitcher(tileId, this.refs).src;
@@ -409,8 +485,6 @@ class App extends React.Component {
   requestAnimationFrame(this.loop);
   }
 
-
-
   render() {
     return(
       <div className="center">
@@ -432,46 +506,49 @@ class App extends React.Component {
         </div>
 
         <ButtonGroup vertical className="float-left">
-              <Button   onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 113, drawTile : ""})}}><img src={require("./images/bulldozer.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "_"})}}><img src={require("./images/spade.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "r"})}} ><img src={require("./images/roadEW.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "gr"})}} ><img src={require("./images/grass.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "rb"})}} ><img src={require("./images/riverBankedEW.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "rv"})}} ><img src={require("./images/riverEW.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "b"})}} ><img src={require("./images/beachES.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "w"})}} ><img src={require("./images/waterNW.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "d"})}} ><img src={require("./images/dirtDouble.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "s"})}} ><img src={require("./images/beach.png")}/></Button>
+              <Button   onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "", selectMode : true})}}>Select</Button>
+              <Button   onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 113, drawTile : "", selectMode : false})}}><img src={require("./images/bulldozer.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "_", selectMode : false})}}><img src={require("./images/spade.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "r", selectMode : false})}} ><img src={require("./images/roadEW.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "gr", selectMode : false})}} ><img src={require("./images/grass.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "rb", selectMode : false})}} ><img src={require("./images/riverBankedEW.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "rv", selectMode : false})}} ><img src={require("./images/riverEW.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "b", selectMode : false})}} ><img src={require("./images/beachES.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "w", selectMode : false})}} ><img src={require("./images/waterNW.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "d", selectMode : false})}} ><img src={require("./images/dirtDouble.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "s", selectMode : false})}} ><img src={require("./images/beach.png")}/></Button>
         </ButtonGroup>
         <ButtonGroup vertical className="float-left">
              
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 107, drawTile : ""})}} ><img src={require("./images/building.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 129, drawTile : ""})}} ><img src={require("./images/building3.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 130, drawTile : ""})}} ><img src={require("./images/building4.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 114, drawTile : ""})}} ><img src={require("./images/boreHole.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 115, drawTile : ""})}} ><img src={require("./images/waterTower.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 116, drawTile : ""})}} ><img src={require("./images/building2.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 117, drawTile : ""})}} ><img src={require("./images/treatmentPond.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 108, drawTile : ""})}} ><img src={require("./images/office.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 91, drawTile : ""})}} ><img src={require("./images/coniferAltShort.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 92, drawTile : ""})}} ><img src={require("./images/coniferAltTall.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 93, drawTile : ""})}} ><img src={require("./images/coniferShort.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 94, drawTile : ""})}} ><img src={require("./images/coniferTall.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 95, drawTile : ""})}} ><img src={require("./images/treeAltShort.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 96, drawTile : ""})}} ><img src={require("./images/treeAltTall.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 132, drawTile : ""})}} ><img src={require("./images/pineForest.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 97, drawTile : ""})}} ><img src={require("./images/treeShort.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 98, drawTile : ""})}} ><img src={require("./images/treeTall.png")}/></Button>
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 99, drawTile : ""})}} ><img src={require("./images/tank.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 107, drawTile : "", selectMode : false})}} ><img src={require("./images/building.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 129, drawTile : "", selectMode : false})}} ><img src={require("./images/building3.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 130, drawTile : "", selectMode : false})}} ><img src={require("./images/building4.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 114, drawTile : "", selectMode : false})}} ><img src={require("./images/boreHole.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 115, drawTile : "", selectMode : false})}} ><img src={require("./images/waterTower.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 116, drawTile : "", selectMode : false})}} ><img src={require("./images/building2.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 117, drawTile : "", selectMode : false})}} ><img src={require("./images/treatmentPond.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 108, drawTile : "", selectMode : false})}} ><img src={require("./images/office.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 91, drawTile : "", selectMode : false})}} ><img src={require("./images/coniferAltShort.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 92, drawTile : "", selectMode : false})}} ><img src={require("./images/coniferAltTall.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 93, drawTile : "", selectMode : false})}} ><img src={require("./images/coniferShort.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 94, drawTile : "", selectMode : false})}} ><img src={require("./images/coniferTall.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 95, drawTile : "", selectMode : false})}} ><img src={require("./images/treeAltShort.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 96, drawTile : "", selectMode : false})}} ><img src={require("./images/treeAltTall.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 132, drawTile : "", selectMode : false})}} ><img src={require("./images/pineForest.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 97, drawTile : "", selectMode : false})}} ><img src={require("./images/treeShort.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 98, drawTile : "", selectMode : false})}} ><img src={require("./images/treeTall.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 99, drawTile : "", selectMode : false})}} ><img src={require("./images/tank.png")}/></Button>
 
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 131, drawTile : ""})}} ><img src={require("./images/dam.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 131, drawTile : "", selectMode : false})}} ><img src={require("./images/dam.png")}/></Button>
 
-              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "p"})}} ><img src={require("./images/pipe1.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 0, drawTile : "p", selectMode : false})}} ><img src={require("./images/pipe1.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 134, drawTile : "", selectMode : false})}} ><img src={require("./images/dataLogger.png")}/></Button>
+              <Button  onClick={()=>{this.setState({currentTileToSet : 0, currentItemTileToSet: 135, drawTile : "", selectMode : false})}} ><img src={require("./images/ashridgeHQ.png")}/></Button>
         </ButtonGroup>
 
 
        
-        <canvas ref="canvas" id="canvas" width={1000} height={500} />
+        <canvas ref="canvas" id="canvas" width={1000} height={1000} />
       
         <ButtonToolbar>
             <ButtonGroup>
@@ -695,11 +772,21 @@ class App extends React.Component {
             <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 131, currentTileToSet: 0, drawTile : ""})}} alt="" ref="dam" src={require("./images/dam.png")}/>
             <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 132, currentTileToSet: 0, drawTile : ""})}} alt="" ref="pineForest" src={require("./images/pineForest.png")}/>
             <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 133, currentTileToSet: 0, drawTile : ""})}} alt="" ref="ashlogo" src={require("./images/ashlogo.png")}/>
+
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 134, currentTileToSet: 0, drawTile : ""})}} alt="" ref="dataLogger" src={require("./images/dataLogger.png")}/>
+
+            <img className={this.state.currentItemTileToSet === 115? "selected": "unselected"} onClick={()=>{this.setState({currentItemTileToSet : 135, currentTileToSet: 0, drawTile : ""})}} alt="" ref="ashridgeHQ" src={require("./images/ashridgeHQ.png")}/>
         </div>
       </div>
    )
   }
 }
+
+var dataLoggers = [];
+
+var r1 = 0;
+var r2 = 15;
+var r3 = 30;
 
 export default App;
 
